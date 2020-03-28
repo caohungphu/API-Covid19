@@ -1,7 +1,11 @@
+import os
 import json
 import requests
 from bs4 import BeautifulSoup
 from operator import itemgetter
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+port = int(os.environ.get('PORT', 80))
 
 url = "https://www.worldometers.info/coronavirus/"
 
@@ -45,7 +49,16 @@ for data in covid_19_data_sorted:
 
 data_done = json.dumps(covid_19_data_sorted)
 
-f = open("data.json", "w")
-f.write(data_done)
-f.close()
+#Write Json File
+#f = open("data.json", "w")
+#f.write(data_done)
+#f.close()
 
+class Serv(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(bytes(data_done, 'utf-8'))
+
+httpd = HTTPServer(('', port), Serv)
+httpd.serve_forever()
