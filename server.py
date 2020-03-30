@@ -9,53 +9,55 @@ port = int(os.environ.get('PORT', 80))
 
 url = "https://www.worldometers.info/coronavirus/"
 
-html = requests.get(url).content
+data_done = ''
 
-soup = BeautifulSoup(html, 'html.parser')
+def RunProcess():
+    
+    global data_done
+    
+    html = requests.get(url).content
 
-table = soup.findAll('tbody')
+    soup = BeautifulSoup(html, 'html.parser')
 
-covid_19_data_main = []
+    table = soup.findAll('tbody')
 
-#Total
+    covid_19_data_main = []
 
-for row in table[1].find_all('tr'):
-    cols = row.find_all('td')
-    covid_19_global = {
-        "country" : "global",
-        "cases" : int(cols[1].text.replace(' ','').replace(',','')),
-        "deaths" : cols[3].text.replace(' ','').replace(',',''),
-        "recovered" : cols[5].text.replace(' ','').replace(',','')
-    }
-    covid_19_data_main.append(covid_19_global)
+    #Total
 
-#Countries
+    for row in table[1].find_all('tr'):
+        cols = row.find_all('td')
+        covid_19_global = {
+            "country" : "global",
+            "cases" : int(cols[1].text.replace(' ','').replace(',','')),
+            "deaths" : cols[3].text.replace(' ','').replace(',',''),
+            "recovered" : cols[5].text.replace(' ','').replace(',','')
+        }
+        covid_19_data_main.append(covid_19_global)
 
-for row in table[0].find_all('tr'):
-    cols = row.find_all('td')
-    data = {
-        "country" : cols[0].text.replace(' ','').replace(',',''),
-        "cases" : int(cols[1].text.replace(' ','').replace(',','')),
-        "deaths" : cols[3].text.replace(' ','').replace(',',''),
-        "recovered" : cols[5].text.replace(' ','').replace(',','')
-    }
-    covid_19_data_main.append(data)
+    #Countries
 
-covid_19_data_sorted = sorted(covid_19_data_main, key=itemgetter('cases'), reverse=True)
+    for row in table[0].find_all('tr'):
+        cols = row.find_all('td')
+        data = {
+            "country" : cols[0].text.replace(' ','').replace(',',''),
+            "cases" : int(cols[1].text.replace(' ','').replace(',','')),
+            "deaths" : cols[3].text.replace(' ','').replace(',',''),
+            "recovered" : cols[5].text.replace(' ','').replace(',','')
+        }
+        covid_19_data_main.append(data)
 
-for data in covid_19_data_sorted:
-    for value in data:
-        data[value] = str(data[value])
+    covid_19_data_sorted = sorted(covid_19_data_main, key=itemgetter('cases'), reverse=True)
 
-data_done = json.dumps(covid_19_data_sorted)
+    for data in covid_19_data_sorted:
+        for value in data:
+            data[value] = str(data[value])
 
-#Write Json File
-#f = open("data.json", "w")
-#f.write(data_done)
-#f.close()
+    data_done = json.dumps(covid_19_data_sorted)
 
 class Serv(BaseHTTPRequestHandler):
     def do_GET(self):
+        RunProcess()
         self.send_response(200)
         self.end_headers()
         self.wfile.write(bytes(data_done, 'utf-8'))
