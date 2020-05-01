@@ -9,11 +9,9 @@ port = int(os.environ.get('PORT', 80))
 
 url = "https://en.wikipedia.org/api/rest_v1/page/html/2019%E2%80%9320_coronavirus_pandemic_by_country_and_territory"
 
-result_global = ''
 result_countries = ''
 
 def RunProcess():
-    global result_global
     global result_countries
     covid_19_data_main = []
     html = requests.get(url).content
@@ -51,7 +49,6 @@ class Serv(BaseHTTPRequestHandler):
         RunProcess()
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(bytes(result_global, 'utf-8'))
         self.wfile.write(bytes(result_countries, 'utf-8'))
 
 httpd = HTTPServer(('', port), Serv)
