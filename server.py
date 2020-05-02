@@ -43,13 +43,21 @@ def RunProcess():
             covid_19_data_main.append(data_json)
     
     result_countries = json.dumps(covid_19_data_main)
+    hp_file = open("data.json", "w")
+    hp_file.write(result_countries)
+    hp_file.close()
 
 class Serv(BaseHTTPRequestHandler):
     def do_GET(self):
-        RunProcess()
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(bytes(result_countries, 'utf-8'))
+        if self.path == '/data.json':
+            hp_file_result = open("data.json", "r")
+            _result = open(self.path[1:]).read()
+            self.wfile.write(bytes(_result, 'utf-8'))
+        else:
+            RunProcess()
+            self.wfile.write(bytes("Cron Success!\nData: https://ncov-api-hp.herokuapp.com/data.json", 'utf-8'))
 
 httpd = HTTPServer(('', port), Serv)
 httpd.serve_forever()
