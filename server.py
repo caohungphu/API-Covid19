@@ -57,7 +57,14 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(_result, 'utf-8'))
         else:
             RunProcess()
-            self.wfile.write(bytes("Cron Success!\nData: https://ncov-api-hp.herokuapp.com/data.json", 'utf-8'))
+            _result = ""
+            _result += "Status: Cron Success!\n"
+            _result += "Json data: https://ncov-api-hp.herokuapp.com/data.json\n"
+            _result += "Source: https://github.com/caohungphu/API-Covid19\n"
+            _result += "Author: Cao Hung Phu\n"
+            _result += "Facebook: caohungphuvn\n"
+            _result += "Contact: caohungphuvn@gmail.com"
+            self.wfile.write(bytes(_result, 'utf-8'))
 
 httpd = HTTPServer(('', port), Serv)
 httpd.serve_forever()
