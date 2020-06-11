@@ -7,7 +7,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 port = int(os.environ.get('PORT', 80))
 
-url = "https://en.wikipedia.org/api/rest_v1/page/html/2019%E2%80%9320_coronavirus_pandemic_by_country_and_territory"
+url = "https://en.wikipedia.org/wiki/Template:COVID-19_pandemic_data#covid19-container"
 
 result_countries = ''
 
@@ -21,10 +21,10 @@ def RunProcess():
     data_global_info = rows[1].findAll("th")
     data_global_json = {
         "location" : "global",
-        "countries " : data_global_info[0].text.replace('\u200d',''),
-        "cases" : data_global_info[1].text.replace('\u200d',''),
-        "deaths" : data_global_info[2].text.replace('\u200d',''),
-        "recovered" : data_global_info[3].text.replace('\u200d','')
+        "countries " : data_global_info[0].text.replace('\n',''),
+        "cases" : data_global_info[1].text.replace('\n',''),
+        "deaths" : data_global_info[2].text.replace('\n',''),
+        "recovered" : data_global_info[3].text.replace('\n','')
     }
     covid_19_data_main.append(data_global_json)
     for row in rows:
@@ -35,10 +35,10 @@ def RunProcess():
             location = info[1].find('a')
             data_json = {
                 "flag" : flag['src'].replace('//','https://'),
-                "location" : location.text,
-                "cases" : data[0].text,
-                "deaths" : data[1].text,
-                "recovered" : data[2].text
+                "location" : location.text.replace('\n',''),
+                "cases" : data[0].text.replace('\n',''),
+                "deaths" : data[1].text.replace('\n',''),
+                "recovered" : data[2].text.replace('\n','')
             }
             covid_19_data_main.append(data_json)
     
