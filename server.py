@@ -20,11 +20,11 @@ def RunProcess():
     rows = table.findAll("tr")
     data_global_info = rows[1].findAll("th")
     data_global_json = {
-        "location" : "global",
-        "countries " : data_global_info[0].text.replace('\n',''),
-        "cases" : data_global_info[1].text.replace('\n',''),
-        "deaths" : data_global_info[2].text.replace('\n',''),
-        "recovered" : data_global_info[3].text.replace('\n','')
+        "flag" : "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Globe.svg/15px-Globe.svg.png",
+        "location" : "Worldwide",
+        "cases" : data_global_info[2].text.replace('\n',''),
+        "deaths" : data_global_info[3].text.replace('\n',''),
+        "recovered" : data_global_info[4].text.replace('\n','')
     }
     covid_19_data_main.append(data_global_json)
     for row in rows:
